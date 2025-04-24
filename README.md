@@ -1,40 +1,83 @@
 # Problem Statement 
-This should be a brief description of the domain of your dataset (e.g. if it is the Titanic Dataset then write about the ship, the incident that happened, what you're trying to do with the data). You can go check out the accompanying blog, [A Machine Learning Project Structure for Everyone!](https://medium.com/@ashwiniyer1706/a-machine-learning-project-structure-for-everyone-e48a81d0bb63)
+In the bustling world of Kanto, where Pokémon battles shape destinies, crime lurks in the shadows. Detective Kotso, the sharpest mind in Pokémon crime investigations, has been tasked with an urgent mission. **The mayor suspects that Team Rocket has infiltrated the city, disguising themselves as ordinary citizens.**
 
+But Kotso doesn’t work alone—he relies on you, a brilliant data scientist, to uncover the truth. Your job? **Analyze the data of 5,000 residents to predict which of the 1,000 unclassified individuals are secretly part of Team Rocket.**
 
 ## Dataset
 
-The dataset used is the [Name of the Dataset](Download link) from (source of download e.g Kaggle). If the task is a classification task, then you must specify the number of classes and give a 1 line description of each class as follows(example of Iris Dataset). 
+This dataset contains demographic, behavioral, and battle-related information of 5,000 Pokémon world citizens. It is the [Pokemon Detective: Unmask Team Rocket](https://www.kaggle.com/datasets/kotsop/pokmon-detective-challenge) from Kaggle.
+The class labels are:
 
-The 3 class labels are:
-<br>
+**1. ID**  
+Unique identifier for each citizen.
 
-**1. Iris Setosa:** Given iris flower belongs to the Setosa species
-<br>
-**2. Iris Virginica:** Given iris flower belongs to the Virginica species
-<br>
-**3. Iris Versicolor:** Given iris flower belongs to the Versicolor species
+**2. Age**  
+Age of the citizen.
 
-If the task is a regression task, then explain the target variable and give brief statistics.(e.g. Housing Prices)
+**3. City**  
+City the citizen currently lives in.
 
-**Target Variable: SalePrice**
-<br>
-<br>
-Sale Price refers to the selling price of the house.
-<br>
-**Mean Selling Price:** 121,000$
-<br>
-**Max Selling Price:** 1,000,000$
-<br>
-**Min Selling Price:** 45,000$
+**4. Economic Status**  
+Socioeconomic class of the citizen.  
+Categorical values: `Low`, `Middle`, or `High`.
 
+**5. Occupation**  
+Profession in the Pokémon world (e.g., Gym Leader, Researcher, Nurse, etc.).
+
+**6. Most Frequent Pokémon Type**  
+The Pokémon type most frequently used by the citizen in battles (e.g., Fire, Water, Psychic, etc.).
+
+**7. Average Pokémon Level**  
+Average level of the Pokémon owned by the citizen.
+
+**8. Criminal Record**  
+Indicates if the citizen has a criminal record.  
+Values:  
+- `0` = Clean  
+- `1` = Dirty
+
+**9. Pokéball Usage**  
+The type of Pokéball most frequently used by the citizen (e.g., DarkBall, UltraBall, TimerBall).
+
+**10. Winning Percentage**  
+Win rate in Pokémon battles, represented as a percentage (e.g., 64%, 88%).
+
+**11. Gym Badges**  
+Number of official gym badges earned (range: 0 to 8).
+
+**12. Is Pokémon Champion**  
+Boolean indicator.  
+`True` if the citizen has defeated the Pokémon League (Elite Four).
+
+**13. Battle Strategy**  
+Typical battle approach.  
+Possible values: `Defensive`, `Aggressive`, `Unpredictable`.
+
+**14. City Movement Frequency**  
+Number of times the citizen changed cities in the past year.
+
+**15. Possession of Rare Items**  
+Boolean indicator of whether the citizen possesses rare or legendary items.  
+Values: `Yes` or `No`.
+
+**16. Debts to the Kanto System**  
+Total amount of debt owed by the citizen to the Kanto government (e.g., 20,000).
+
+**17. Charitable Activities**  
+Boolean indicator.  
+`Yes` if the citizen has participated in registered charity events.
+
+**18. Team Rocket Membership**  
+**Target variable.**  
+Indicates whether the citizen is a secret member of **Team Rocket**.  
+Values:  
+- `Yes` = Member of Team Rocket  
+- `No` = Not affiliated
 
 ## Model(s) Used
 
 This needs to be a description of the model used and a brief overview of how it works in theory (e.g taken of a CNN Model): 
 
-The network architecture used was a basic CNN model, with Max Pooling and ReLU Activation functions. Input images are resized to an optimal size and then fed into the **Convolutional layer**. These images are converted to their pixel values, which can be imagined as a three-dimensional matrix for the purpose of visualization. The **Convolutional layer** has a kernel. This kernel is generally a small matrix of specified kernel size mxnx3 (3 for RGB images). 
-<br>
 
 **Rectified Linear Unit (ReLU)** is the activation layer used in CNNs.The activation function is applied to increase non-linearity in the CNN. Images are made of different objects that are not linear to each other.
 
