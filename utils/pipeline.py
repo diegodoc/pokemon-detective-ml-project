@@ -8,6 +8,8 @@ from imblearn.over_sampling import SMOTE
 import matplotlib.pyplot as plt
 import os
 import seaborn as sns
+import shap
+
 
 RANDOM_STATE = 42
 TARGET_COL = "Team Rocket"
@@ -147,11 +149,9 @@ def predict_unlabeled(model: object, unlabeled_df: pd.DataFrame,
     print("✅ Predictions saved to 'predictions.csv'")
 
 def plot_metric_by_strategy(df):
-    import matplotlib.pyplot as plt
-    import seaborn as sns
 
     def plot_metric(metric_prefix, metric_name, palette="tab10"):
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(8, 4))
         ax = sns.barplot(
             x="Strategy", 
             y=f"{metric_prefix}_{metric_name}", 
@@ -196,7 +196,7 @@ def plot_metric_by_strategy(df):
     plt.legend().remove()
 
     for container in ax.containers:
-        ax.bar_label(container, fmt='%.3f', label_type='edge', padding=3, fontsize=10)
+        ax.bar_label(container, fmt='%.3f', label_type='edge', padding=3, fontsize=7)
 
     plt.tight_layout()
     plt.show()
