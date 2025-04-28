@@ -200,4 +200,22 @@ def plot_metric_by_strategy(df):
 
     plt.tight_layout()
     plt.show()
+
+def plot_feature_importance(model, X_train: pd.DataFrame) -> None:
     
+    # Get feature importances
+    importances = pd.DataFrame({
+        'feature': X_train.columns,
+        'importance': model.feature_importances_
+    }).sort_values('importance', ascending=False)
+    
+    # Plot
+    plt.figure(figsize=(10, 6))
+    sns.barplot(data=importances.head(15), x='importance', y='feature')
+    plt.title('Top 15 Most Important Features')
+    plt.xlabel('Importance Score')
+    plt.tight_layout()
+    plt.show()
+    
+    print("\n🎯 Top 10 Most Important Features:")
+    print(importances.head(10))
