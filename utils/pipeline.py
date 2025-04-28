@@ -7,6 +7,7 @@ from sklearn.model_selection import StratifiedKFold
 from imblearn.over_sampling import SMOTE
 import matplotlib.pyplot as plt
 import os
+import seaborn as sns
 
 RANDOM_STATE = 42
 TARGET_COL = "Team Rocket"
@@ -144,3 +145,59 @@ def predict_unlabeled(model: object, unlabeled_df: pd.DataFrame,
     os.makedirs(output_path, exist_ok=True)
     unlabeled_df.to_csv(f"{output_path}/predictions.csv", index=False)
     print("✅ Predictions saved to 'predictions.csv'")
+
+def plot_metric_by_strategy(df):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    def plot_metric(metric_prefix, metric_name, palette="tab10"):
+        plt.figure(figsize=(10, 6))
+        ax = sns.barplot(
+            x="Strategy", 
+            y=f"{metric_prefix}_{metric_name}", 
+            hue="Strategy",
+            data=df,
+            palette=palette
+        )
+        plt.title(f"{metric_prefix} - {metric_name.capitalize()} by Strategy", fontsize=14)
+        plt.xlabel("Balancing Strategy")
+        plt.ylabel(metric_name.capitalize())
+        plt.ylim(0, 1.05)
+        plt.xticks(rotation=15)
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.legend().remove()
+
+        for container in ax.containers:
+            ax.bar_label(container, fmt='%.2f', label_type='edge', padding=3, fontsize=10)
+
+        plt.tight_layout()
+        plt.show()
+
+    # Plot metrics for class 0 and 1
+    for metric in ['precision', 'recall', 'f1']:
+        plot_metric('0', metric)
+        plot_metric('1', metric)
+
+    # Plot mean AUC-ROC
+    plt.figure(figsize=(10, 6))
+    ax = sns.barplot(
+        x="Strategy", 
+        y="mean_AUC_ROC", 
+        hue="Strategy",
+        data=df,
+        palette="Set2"
+    )
+    plt.title("Mean AUC-ROC by Strategy", fontsize=14)
+    plt.xlabel("Balancing Strategy")
+    plt.ylabel("AUC-ROC")
+    plt.ylim(0.99, 1.001)
+    plt.xticks(rotation=15)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.legend().remove()
+
+    for container in ax.containers:
+        ax.bar_label(container, fmt='%.3f', label_type='edge', padding=3, fontsize=10)
+
+    plt.tight_layout()
+    plt.show()
+    

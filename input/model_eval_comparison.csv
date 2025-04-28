@@ -1,0 +1,5 @@
+Strategy,mean_AUC_ROC,0_precision,0_recall,0_f1,0_support,1_precision,1_recall,1_f1,1_support
+No balancing,0.995,1.0,1.0,1.0,656,1.0,0.99,0.99,144
+Class weight,0.996,1.0,1.0,1.0,656,1.0,0.98,0.99,144
+SMOTE,0.997,0.99,1.0,1.0,656,1.0,0.97,0.99,144
+SMOTE + Class weight,0.994,1.0,1.0,1.0,656,1.0,0.98,0.99,144
