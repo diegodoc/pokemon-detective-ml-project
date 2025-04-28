@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, RocCurveDisplay
+from sklearn.model_selection import StratifiedKFold
 from imblearn.over_sampling import SMOTE
 import matplotlib.pyplot as plt
 import os
@@ -63,36 +64,67 @@ def prepare_features(df: pd.DataFrame, is_train: bool = True, fitted_columns: pd
 def train_model(model, X_train: pd.DataFrame, X_test: pd.DataFrame, 
                 y_train: pd.Series, y_test: pd.Series, 
                 use_smote: bool = False,
-                use_class_weight: bool = False) -> object:
-    if use_smote:
-        smote = SMOTE(random_state=RANDOM_STATE)
-        X_train, y_train = smote.fit_resample(X_train, y_train)
+                use_class_weight: bool = False, n_splits: int = 5) -> tuple:
     
-    if use_class_weight:
-        class_counts = y_train.value_counts()
-        total_samples = len(y_train)
-        weights = {
-            0: total_samples / (2 * class_counts[0]),
-            1: total_samples / (2 * class_counts[1])
-        }
-        model.set_params(class_weight=weights)
+    # Initialize StratifiedKFold
+    skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=RANDOM_STATE)
+    
+    cv_scores = []
+    
+    for fold, (train_idx, val_idx) in enumerate(skf.split(X_train, y_train), 1):
+        X_fold_train = X_train.iloc[train_idx]
+        y_fold_train = y_train.iloc[train_idx]
+        X_fold_val = X_train.iloc[val_idx]
+        y_fold_val = y_train.iloc[val_idx]
+        
+        # Apply SMOTE if requested
+        if use_smote:
+            smote = SMOTE(random_state=RANDOM_STATE)
+            X_fold_train, y_fold_train = smote.fit_resample(X_fold_train, y_fold_train)
+        
+        # Apply class weights if requested
+        if use_class_weight:
+            class_counts = y_fold_train.value_counts()
+            total_samples = len(y_fold_train)
+            weights = {
+                0: total_samples / (2 * class_counts[0]),
+                1: total_samples / (2 * class_counts[1])
+            }
+            model.set_params(class_weight=weights)
+        
+        # Train model on fold
+        model.fit(X_fold_train, y_fold_train)
+        
+        # Evaluate on validation fold
+        y_fold_prob = model.predict_proba(X_fold_val)[:, 1]
+        fold_score = roc_auc_score(y_fold_val, y_fold_prob)
+        cv_scores.append(fold_score)
+        
+        print(f"Fold {fold} AUC-ROC: {fold_score:.3f}")
+    
+    print(f"\nMean CV AUC-ROC: {np.mean(cv_scores):.3f} (+/- {np.std(cv_scores):.3f})")
+    
+    # Final training on full training set
+    if use_smote:
+        X_train, y_train = smote.fit_resample(X_train, y_train)
     
     model.fit(X_train, y_train)
     
+    # Evaluate on test set
     y_pred = model.predict(X_test)
     y_prob = model.predict_proba(X_test)[:, 1]
     
-    print("📋 Classification Report:")
+    print("\n📋 Final Test Set Results:")
     print(classification_report(y_test, y_pred))
     print("\n🧩 Confusion Matrix:")
     print(confusion_matrix(y_test, y_pred))
-    print(f"\n🎯 AUC-ROC: {roc_auc_score(y_test, y_prob):.3f}")
+    print(f"\n🎯 Test Set AUC-ROC: {roc_auc_score(y_test, y_prob):.3f}")
     
     RocCurveDisplay.from_estimator(model, X_test, y_test)
     plt.title("ROC Curve")
     plt.show()
     
-    return model
+    return model, np.mean(cv_scores)
 
 def predict_unlabeled(model: object, unlabeled_df: pd.DataFrame, 
                      fitted_columns: pd.Index, output_path: str) -> None:
