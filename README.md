@@ -76,13 +76,54 @@ Values:
 
 ## Model(s) Used
 
-This needs to be a description of the model used and a brief overview of how it works in theory (e.g taken of a CNN Model): 
+Two main models were implemented for Team Rocket member detection:
 
+**1. Logistic Regression**
+A linear classification model that estimates the probability of a binary outcome. It works by:
+- Applying a linear combination of features
+- Transforming the output through a sigmoid function to get probabilities between 0 and 1
+- Using "saga" solver to handle both L1 and L2 regularization
+- Setting max_iter=7000 to ensure convergence with our complex feature set
 
-**Rectified Linear Unit (ReLU)** is the activation layer used in CNNs.The activation function is applied to increase non-linearity in the CNN. Images are made of different objects that are not linear to each other.
+**2. Random Forest Classifier**
+An ensemble learning method that operates by:
+- Constructing multiple decision trees during training
+- Having each tree "vote" on the final classification
+- Combining these votes to make the final prediction
+- Using feature randomness to create diverse trees and prevent overfitting
 
+**Hyperparameter Optimization**
+GridSearchCV was employed to fine-tune the Random Forest model by:
+- Testing different combinations of parameters:
+  - n_estimators: [10, 50, 100, 200]
+  - max_depth: [None, 10, 20, 30]
+  - min_samples_split: [2, 5, 10]
+  - min_samples_leaf: [1, 2, 4]
+  - bootstrap: [True, False]
+- Using 5-fold cross-validation to ensure robust performance
+- Selecting the best parameter combination based on validation scores
 
-**Max Pooling:** A limitation of the feature map output of Convolutional Layers is that they record the precise position of features in the input. This means that small movements in the position of the feature in the input image will result in a different feature map. This can happen with re-cropping, rotation, shifting, and other minor changes to the input image. A common approach to addressing this problem from signal processing is called down sampling. This is where a lower resolution version of an input signal is created that still contains the large or important structural elements, without the fine detail that may not be as useful to the task.
+**Class Imbalance Handling**
+Both models were tested with various balancing techniques:
+- Class weights
+- SMOTE (Synthetic Minority Over-sampling Technique)
+- Combination of SMOTE and class weights
 
 ## Future Work
-Good ideas or strategies that you were not able to implement which you think can help  improve performance.
+
+Several potential improvements could enhance the model's performance:
+
+1. **Feature Engineering**
+   - Create interaction features between related variables
+   - Develop more sophisticated behavioral patterns analysis
+   - Include temporal analysis of citizen activities
+
+2. **Model Enhancements**
+   - Implement stacking with other classifiers (XGBoost, LightGBM)
+   - Explore deep learning approaches for complex pattern recognition
+   - Develop custom loss functions that penalize false negatives more heavily
+
+3. **Deployment Considerations**
+   - Develop real-time prediction capabilities
+   - Implement model monitoring for concept drift
+   - Create an interpretability dashboard for law enforcement use
