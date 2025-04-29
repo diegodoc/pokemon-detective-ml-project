@@ -1,0 +1,3 @@
+model,mean_AUC_ROC,0_precision,0_recall,0_f1,1_precision,1_recall,1_f1
+basic_parameters,0.805,0.89,0.88,0.88,0.48,0.51,0.49
+opmizied_parameters,0.991,0.99,1.00,1.00,1.00,0.96,0.98
